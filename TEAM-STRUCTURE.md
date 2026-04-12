@@ -106,8 +106,11 @@ PM은 이 순서대로 Linear 티켓을 생성하고, 선행 작업이 merge된 
 - 반응형 디자인
 
 **기술 스택**:
-- HTML + CSS + Vanilla JS (또는 React — PM이 결정)
-- Chart.js (또는 비슷한 차트 라이브러리)
+- React 18+ (Vite)
+- TypeScript (strict mode)
+- TanStack Query (서버 상태 관리)
+- Recharts (차트 라이브러리)
+- Tailwind CSS (스타일링)
 - Fetch API로 backend REST 호출
 
 **읽어야 할 `.agent/` 파일**:
@@ -285,4 +288,4 @@ Argus는 실제 스택이 다르므로 다음 차이를 강의에서 설명:
 | ORM | SQLAlchemy | 동일 — SQLAlchemy 사용 |
 | 데이터 원본 | 에이전트가 생성한 데이터 | Hermes Agent가 이미 저장한 데이터 |
 | 인프라 | Docker Compose (postgres, backend, frontend) | SQLite 파일 기반 (Docker 불필요) |
-| 프론트엔드 스택 | React + TanStack Query | PM이 결정 (Vanilla JS / React) |
+| 프론트엔드 스택 | React + TanStack Query | 동일 — React + TanStack Query + Recharts + Tailwind |
