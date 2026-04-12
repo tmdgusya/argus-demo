@@ -138,97 +138,11 @@ hermes -p backend model     # 모델 선택 프롬프트
 
 ---
 
-## 7. (선택) 워크플로우 스킬 확인
+## 7. Telegram 그룹챗 연결 및 1차 검증
 
-```bash
-hermes -p backend skills list | grep -E 'github-pr-workflow|linear'
-hermes -p frontend skills list | grep -E 'github-pr-workflow|linear'
-hermes -p dba skills list | grep -E 'github-pr-workflow|linear'
-```
-
-> 참고:
-> - 이 단계는 setup 필수가 아닙니다.
-> - `github-pr-workflow`, `linear`는 반복 작업을 줄이는 보조 스킬입니다.
-> - E2E 테스트 하네스는 backend 개발 과정에서 구축하는 산출물이지, 사전 셋업 항목이 아닙니다.
-
----
-
-## 8. Linear 라벨 생성
-
-Argus 프로젝트(ROA 팀)에 티켓 라우팅용 라벨을 생성합니다.
-
-```bash
-# area 라벨 (각 프로파일의 담당 영역)
-curl -s -X POST https://api.linear.app/graphql \
-  -H "Authorization: $LINEAR_API_KEY" \
-  -H "Content-Type: application/json" \
-  -d '{"query":"mutation { labelCreate(input: { name: \"area:backend\", color: \"#5B8DEF\", teamId: \"159aef2b-b7f3-470b-920e-fd1b39407428\" }) { label { id name } success } }"}' | python3 -m json.tool
-
-curl -s -X POST https://api.linear.app/graphql \
-  -H "Authorization: $LINEAR_API_KEY" \
-  -H "Content-Type: application/json" \
-  -d '{"query":"mutation { labelCreate(input: { name: \"area:frontend\", color: \"#4BC6B9\", teamId: \"159aef2b-b7f3-470b-920e-fd1b39407428\" }) { label { id name } success } }"}' | python3 -m json.tool
-
-curl -s -X POST https://api.linear.app/graphql \
-  -H "Authorization: $LINEAR_API_KEY" \
-  -H "Content-Type: application/json" \
-  -d '{"query":"mutation { labelCreate(input: { name: \"area:database\", color: \"#F2C94C\", teamId: \"159aef2b-b7f3-470b-920e-fd1b39407428\" }) { label { id name } success } }"}' | python3 -m json.tool
-
-# 의존성 라벨
-curl -s -X POST https://api.linear.app/graphql \
-  -H "Authorization: $LINEAR_API_KEY" \
-  -H "Content-Type: application/json" \
-  -d '{"query":"mutation { labelCreate(input: { name: \"dep:blocked\", color: \"#EB5757\", teamId: \"159aef2b-b7f3-470b-920e-fd1b39407428\" }) { label { id name } success } }"}' | python3 -m json.tool
-
-curl -s -X POST https://api.linear.app/graphql \
-  -H "Authorization: $LINEAR_API_KEY" \
-  -H "Content-Type: application/json" \
-  -d '{"query":"mutation { labelCreate(input: { name: \"dep:ready\", color: \"#27AE60\", teamId: \"159aef2b-b7f3-470b-920e-fd1b39407428\" }) { label { id name } success } }"}' | python3 -m json.tool
-```
-
----
-
-## 9. Argus 레포 초기화
-
-```bash
-cd ~/projects/argus
-
-# .agent/ 공유 디렉토리 생성
-mkdir -p .agent
-
-# 팀 컨벤션/컨텍스트 파일 생성 (PM이 작성)
-touch .agent/context.md
-touch .agent/conventions.md
-
-# Git 초기화 (이미 done이라면 skip)
-git init
-git add -A
-git commit -m "chore: argus 프로젝트 초기 구조"
-```
-
----
-
-## 10. Cron Polling 설정
-
-각 프로파일에서 Linear를 주기적으로 폴링하도록 cron을 설정합니다.
-
-```bash
-# backend 예시: 5분마다 area:backend 티켓 확인
-hermes -p backend cron create \
-  --schedule "*/5 * * * *" \
-  --prompt "Linear에서 @backend가 언급되고 area:backend 라벨이 달린 Todo/Backlog 티켓을 확인하고, dep:blocked가 없으면 작업을 시작하세요. 작업 시작 전 티켓을 In Progress로 변경하고, 완료 후 PR 링크를 티켓에 코멘트로 남기세요."
-
-# frontend, dba도 동일하게 설정
-```
-
-> **참고**: cron 세부 설정은 커리큘럼 v2 S19에서 다룹니다.
-
----
-
-## 11. (선택) Telegram 그룹챗 연결
-
-> 이 단계는 `backend/SETUP.md`, `frontend/SETUP.md`, `dba/SETUP.md`를 각각 끝낸 뒤 진행합니다.
-> Telegram 그룹챗에서는 default 개인 봇이 아니라 **프로파일 전용 봇 3개**를 직접 초대해야 합니다.
+> 이 단계는 선택이 아닙니다.
+> `backend/SETUP.md`, `frontend/SETUP.md`, `dba/SETUP.md`를 각각 끝낸 뒤, root `SETUP.md`로 돌아와 **가장 먼저** 수행합니다.
+> Linear 라벨 생성, Argus 레포 초기화, cron 설정보다 먼저 Telegram 그룹챗 연결을 확인해야 합니다.
 
 초대할 봇:
 - `@argus_backend_bot`
@@ -264,24 +178,94 @@ dba gateway        # → @argus_dba_bot 담당
 
 ---
 
-## 12. Gateway 기동
-
-모든 설정이 완료되면 각 프로파일의 gateway를 기동합니다:
+## 8. (선택) 워크플로우 스킬 확인
 
 ```bash
-# 각각 별도 터미널에서 실행
-backend gateway    # → @argus_backend_bot 담당
-frontend gateway   # → @argus_frontend_bot 담당
-dba gateway        # → @argus_dba_bot 담당
+hermes -p backend skills list | grep -E 'github-pr-workflow|linear'
+hermes -p frontend skills list | grep -E 'github-pr-workflow|linear'
+hermes -p dba skills list | grep -E 'github-pr-workflow|linear'
 ```
 
-정상 기동 확인:
-- 각 gateway 프로세스가 정상 실행 중인지 확인
-- Telegram 그룹에서 각 봇을 멘션했을 때 응답하는지 테스트
+> 참고:
+> - 이 단계는 setup 필수가 아닙니다.
+> - `github-pr-workflow`, `linear`는 반복 작업을 줄이는 보조 스킬입니다.
+> - E2E 테스트 하네스는 backend 개발 과정에서 구축하는 산출물이지, 사전 셋업 항목이 아닙니다.
 
 ---
 
-## 13. 검증 체크리스트
+## 9. Linear 라벨 생성
+
+Argus 프로젝트(ROA 팀)에 티켓 라우팅용 라벨을 생성합니다.
+
+```bash
+# area 라벨 (각 프로파일의 담당 영역)
+curl -s -X POST https://api.linear.app/graphql \
+  -H "Authorization: $LINEAR_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{"query":"mutation { labelCreate(input: { name: \"area:backend\", color: \"#5B8DEF\", teamId: \"159aef2b-b7f3-470b-920e-fd1b39407428\" }) { label { id name } success } }"}' | python3 -m json.tool
+
+curl -s -X POST https://api.linear.app/graphql \
+  -H "Authorization: $LINEAR_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{"query":"mutation { labelCreate(input: { name: \"area:frontend\", color: \"#4BC6B9\", teamId: \"159aef2b-b7f3-470b-920e-fd1b39407428\" }) { label { id name } success } }"}' | python3 -m json.tool
+
+curl -s -X POST https://api.linear.app/graphql \
+  -H "Authorization: $LINEAR_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{"query":"mutation { labelCreate(input: { name: \"area:database\", color: \"#F2C94C\", teamId: \"159aef2b-b7f3-470b-920e-fd1b39407428\" }) { label { id name } success } }"}' | python3 -m json.tool
+
+# 의존성 라벨
+curl -s -X POST https://api.linear.app/graphql \
+  -H "Authorization: $LINEAR_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{"query":"mutation { labelCreate(input: { name: \"dep:blocked\", color: \"#EB5757\", teamId: \"159aef2b-b7f3-470b-920e-fd1b39407428\" }) { label { id name } success } }"}' | python3 -m json.tool
+
+curl -s -X POST https://api.linear.app/graphql \
+  -H "Authorization: $LINEAR_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{"query":"mutation { labelCreate(input: { name: \"dep:ready\", color: \"#27AE60\", teamId: \"159aef2b-b7f3-470b-920e-fd1b39407428\" }) { label { id name } success } }"}' | python3 -m json.tool
+```
+
+---
+
+## 10. Argus 레포 초기화
+
+```bash
+cd ~/projects/argus
+
+# .agent/ 공유 디렉토리 생성
+mkdir -p .agent
+
+# 팀 컨벤션/컨텍스트 파일 생성 (PM이 작성)
+touch .agent/context.md
+touch .agent/conventions.md
+
+# Git 초기화 (이미 done이라면 skip)
+git init
+git add -A
+git commit -m "chore: argus 프로젝트 초기 구조"
+```
+
+---
+
+## 11. Cron Polling 설정
+
+각 프로파일에서 Linear를 주기적으로 폴링하도록 cron을 설정합니다.
+
+```bash
+# backend 예시: 5분마다 area:backend 티켓 확인
+hermes -p backend cron create \
+  --schedule "*/5 * * * *" \
+  --prompt "Linear에서 @backend가 언급되고 area:backend 라벨이 달린 Todo/Backlog 티켓을 확인하고, dep:blocked가 없으면 작업을 시작하세요. 작업 시작 전 티켓을 In Progress로 변경하고, 완료 후 PR 링크를 티켓에 코멘트로 남기세요."
+
+# frontend, dba도 동일하게 설정
+```
+
+> **참고**: cron 세부 설정은 커리큘럼 v2 S19에서 다룹니다.
+
+---
+
+## 12. 검증 체크리스트
 
 | # | 항목 | 확인 방법 |
 |---|------|----------|
@@ -291,12 +275,11 @@ dba gateway        # → @argus_dba_bot 담당
 | 4 | Telegram 기본 설정 확인 | 각 프로파일에 `TELEGRAM_ALLOWED_USERS`가 설정됨 |
 | 5 | SOUL.md 작성 완료 | `backend chat`으로 역할 인지 확인 |
 | 6 | 모델 설정 완료 | `hermes -p backend profile show` 확인 |
-| 7 | (선택) workflow skill 확인 | `hermes -p backend skills list`에 github-pr-workflow / linear 표시 |
-| 8 | Linear 라벨 생성 | Linear 프로젝트에 area:*, dep:* 라벨 존재 |
-| 9 | `.agent/` 디렉토리 | `context.md`, `conventions.md` 파일 존재 |
-| 10 | Telegram 그룹챗 연결 (선택) | `@argus_backend_bot`, `@argus_frontend_bot`, `@argus_dba_bot` 멘션 시 각 프로파일이 응답 |
-| 11 | Gateway 기동 | 3개 gateway 프로세스가 정상 실행 |
-| 12 | Cron 동작 | 티켓 생성 후 자동으로 에이전트가 인식 |
+| 7 | Telegram 그룹챗 연결 | `@argus_backend_bot`, `@argus_frontend_bot`, `@argus_dba_bot` 멘션 시 각 프로파일이 응답 |
+| 8 | (선택) workflow skill 확인 | `hermes -p backend skills list`에 github-pr-workflow / linear 표시 |
+| 9 | Linear 라벨 생성 | Linear 프로젝트에 area:*, dep:* 라벨 존재 |
+| 10 | `.agent/` 디렉토리 | `context.md`, `conventions.md` 파일 존재 |
+| 11 | Cron 동작 | 티켓 생성 후 자동으로 에이전트가 인식 |
 
 ---
 
