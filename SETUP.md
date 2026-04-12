@@ -271,7 +271,46 @@ hermes -p backend cron create \
 
 ---
 
-## 11. Discord Gateway 기동
+## 11. (선택) Telegram 그룹챗 연결
+
+> 이 단계는 `backend/SETUP.md`, `frontend/SETUP.md`, `dba/SETUP.md`를 각각 끝낸 뒤 진행합니다.
+> Telegram 그룹챗에서는 default 개인 봇이 아니라 **프로파일 전용 봇 3개**를 직접 초대해야 합니다.
+
+초대할 봇:
+- `@argus_backend_bot`
+- `@argus_frontend_bot`
+- `@argus_dba_bot`
+
+중요:
+- 개인 DM에서 응답하던 기본 봇(예: `@roach_robot`)이 있다고 해서 위 3개 프로파일 봇이 자동으로 그룹에서 동작하는 것은 아닙니다.
+- Telegram 그룹에서는 **실제로 그룹에 들어가 있는 봇 username**과 **현재 띄운 gateway 프로파일**이 일치해야 합니다.
+
+권장 순서:
+1. Telegram 그룹을 하나 만든다
+2. 위 3개 봇을 그룹에 초대한다
+3. 각 봇에 대해 개별 profile gateway를 띄운다
+4. 그룹에서 각 봇을 정확한 username으로 멘션해 응답을 확인한다
+
+```bash
+# 각각 별도 터미널에서 실행
+backend gateway    # → @argus_backend_bot 담당
+frontend gateway   # → @argus_frontend_bot 담당
+dba gateway        # → @argus_dba_bot 담당
+```
+
+빠른 검증 예시:
+- `@argus_backend_bot 안녕하세요`
+- `@argus_frontend_bot 안녕하세요`
+- `@argus_dba_bot 안녕하세요`
+
+응답이 없으면 먼저 확인할 것:
+- 그룹에 초대한 봇 username이 정말 `@argus_backend_bot`, `@argus_frontend_bot`, `@argus_dba_bot`인지
+- 해당 프로파일 gateway가 실제로 떠 있는지 (`backend gateway`, `frontend gateway`, `dba gateway`)
+- 개별 profile `SETUP.md`에서 안내한 Telegram privacy/admin 설정을 적용했는지
+
+---
+
+## 12. Discord Gateway 기동
 
 모든 설정이 완료되면 각 프로파일의 gateway를 기동합니다:
 
@@ -288,7 +327,7 @@ dba gateway        # → argus-dba 봇이 #argus-dba 채널에서 대기
 
 ---
 
-## 12. 검증 체크리스트
+## 13. 검증 체크리스트
 
 | # | 항목 | 확인 방법 |
 |---|------|----------|
@@ -302,8 +341,9 @@ dba gateway        # → argus-dba 봇이 #argus-dba 채널에서 대기
 | 8 | (선택) workflow skill 확인 | `hermes -p backend skills list`에 github-pr-workflow / linear 표시 |
 | 9 | Linear 라벨 생성 | Linear 프로젝트에 area:*, dep:* 라벨 존재 |
 | 10 | `.agent/` 디렉토리 | `context.md`, `conventions.md` 파일 존재 |
-| 11 | Gateway 기동 | 3개 봇이 각자 채널에서 온라인 |
-| 12 | Cron 동작 | 티켓 생성 후 자동으로 에이전트가 인식 |
+| 11 | Telegram 그룹챗 연결 (선택) | `@argus_backend_bot`, `@argus_frontend_bot`, `@argus_dba_bot` 멘션 시 각 프로파일이 응답 |
+| 12 | Gateway 기동 | 3개 봇이 각자 채널에서 온라인 |
+| 13 | Cron 동작 | 티켓 생성 후 자동으로 에이전트가 인식 |
 
 ---
 
