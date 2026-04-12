@@ -17,7 +17,7 @@
 | Column | Type | 설명 | Argus 활용 |
 |--------|------|------|------------|
 | `id` | TEXT PK | `YYYYMMDD_HHMMSS_hex` 형식 | 세션 고유 키 |
-| `source` | TEXT | `cli`, `telegram`, `discord` 등 | 플랫폼별 통계 |
+| `source` | TEXT | `cli`, `telegram` 등 | 플랫폼별 통계 |
 | `user_id` | TEXT | 플랫폼별 사용자 ID | 사용자 추적 |
 | `model` | TEXT | `glm-5-turbo`, `claude-opus-4` 등 | 모델별 사용량/비용 |
 | `model_config` | TEXT (JSON) | 모델 설정 스냅샷 | 설정 변경 이력 |

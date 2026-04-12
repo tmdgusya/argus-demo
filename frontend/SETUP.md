@@ -47,14 +47,7 @@ sed -i '/^TELEGRAM_HOME_CHANNEL=/d' ~/.hermes/profiles/frontend/.env
 echo 'TELEGRAM_HOME_CHANNEL=<your-group-chat-id>' >> ~/.hermes/profiles/frontend/.env
 ```
 
-## 8. Discord 토큰 제거 (있는 경우)
-
-```bash
-sed -i '/^DISCORD_BOT_TOKEN=/d' ~/.hermes/profiles/frontend/.env
-sed -i '/^DISCORD_ALLOWED_USERS=/d' ~/.hermes/profiles/frontend/.env
-```
-
-## 9. (선택) 워크플로우 스킬 확인
+## 8. (선택) 워크플로우 스킬 확인
 
 ```bash
 hermes -p frontend skills list | grep -E 'github-pr-workflow|linear'
@@ -63,7 +56,7 @@ hermes -p frontend skills list | grep -E 'github-pr-workflow|linear'
 > 참고: 이 단계는 setup 필수가 아닙니다.
 > Codex는 `codex` CLI 스킬이 아니라 Hermes에 연동하는 provider/모델 의미입니다.
 
-## 10. 확인
+## 9. 확인
 
 ```bash
 hermes profile show frontend
@@ -71,7 +64,7 @@ hermes -p frontend skills list
 frontend chat
 ```
 
-## 11. Gateway 실행
+## 10. Gateway 실행
 
 ```bash
 frontend gateway run

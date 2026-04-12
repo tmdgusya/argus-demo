@@ -21,7 +21,7 @@
 - DBA가 `.agent/schema-changelog.md`에 argus.db 스키마를 업데이트하면 반드시 참고
 - API 스펙 변경 시 `.agent/api-spec.md`를 즉시 업데이트 (frontend가 의존)
 - Hermes의 `state.db`는 WAL 모드 — 읽기 전용으로 접근, 절대 쓰지 마세요
-- 작업 완료 후 Discord 채널에 진행 상황 보고
+- 작업 완료 후 Telegram 그룹채팅에 진행 상황 보고
 
 ## 읽어야 할 `.agent/` 파일
 

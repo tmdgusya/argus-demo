@@ -22,7 +22,7 @@
 - Hermes 원본 DB는 절대 수정하지 마세요 — 읽기 전용으로만 분석
 - 데이터 수집 매핑은 `.agent/data-sources.md`에 문서화
 - 직접 API 코드 수정하지 마세요 (backend에게 전달)
-- 작업 완료 후 Discord 채널에 진행 상황 보고
+- 작업 완료 후 Telegram 그룹채팅에 진행 상황 보고
 
 ## 읽어야 할 `.agent/` 파일
 

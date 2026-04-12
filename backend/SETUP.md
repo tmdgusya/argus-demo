@@ -67,16 +67,7 @@ echo 'TELEGRAM_HOME_CHANNEL=<your-group-chat-id>' >> ~/.hermes/profiles/backend/
 
 > 그룹 채팅 ID는 @userinfobot을 그룹에 초대하면 확인할 수 있습니다.
 
-## 8. Discord 토큰 제거 (있는 경우)
-
-clone으로 복사된 Discord 설정이 있으면 제거:
-
-```bash
-sed -i '/^DISCORD_BOT_TOKEN=/d' ~/.hermes/profiles/backend/.env
-sed -i '/^DISCORD_ALLOWED_USERS=/d' ~/.hermes/profiles/backend/.env
-```
-
-## 9. (선택) 워크플로우 스킬 확인
+## 8. (선택) 워크플로우 스킬 확인
 
 ```bash
 hermes -p backend skills list | grep -E 'github-pr-workflow|linear'
@@ -87,7 +78,7 @@ hermes -p backend skills list | grep -E 'github-pr-workflow|linear'
 > - Codex는 `codex` CLI 스킬이 아니라 Hermes에 연동하는 provider/모델 의미입니다.
 > - E2E 테스트 하네스는 backend 개발 과정에서 구축하는 산출물이지, 셋업 선행조건이 아닙니다.
 
-## 10. 확인
+## 9. 확인
 
 ```bash
 hermes profile show backend
@@ -95,7 +86,7 @@ hermes -p backend skills list
 backend chat
 ```
 
-## 11. Gateway 실행
+## 10. Gateway 실행
 
 별도 터미널에서 foreground로 실행:
 

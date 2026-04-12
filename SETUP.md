@@ -11,59 +11,28 @@
 - Hermes Agent 설치 완료 (`hermes --version` 동작)
 - Git 계정 설정 완료 (`gh auth status` 동작)
 - Python 3.11+ / Node.js 20+ 설치
-- 웹 브라우저 (Discord Developer Portal 접근용)
+- Telegram 앱 또는 Telegram Web 접근 가능
 
 ---
 
-## 1. Discord Bot 3개 생성
+## 1. Telegram Bot 3개 생성
 
-> **핵심**: Discord는 bot token 하나당 gateway 커넥션 하나만 유지 가능.
-> 두 프로파일이 같은 토큰으로 gateway를 띄우면 충돌(Conflict) 발생.
-> 따라서 프로파일마다 **별도 Discord Bot**이 필요합니다.
+> **핵심**: 프로파일마다 **별도 Telegram Bot Token**이 필요합니다.
+> backend/frontend/dba가 같은 토큰을 재사용하면 어떤 프로파일이 어떤 대화를 처리하는지 섞입니다.
 
-### 1-1. Discord Developer Portal
+1. Telegram에서 `@BotFather` 검색 후 대화 시작
+2. `/newbot`을 3번 실행해 봇 3개 생성
 
-1. https://discord.com/developers/applications 접속
-2. **New Application** 버튼 클릭 × 3개 생성
+| Profile | Bot username |
+|---------|--------------|
+| `backend` | `@argus_backend_bot` |
+| `frontend` | `@argus_frontend_bot` |
+| `dba` | `@argus_dba_bot` |
 
-| Application 이름 | 용도 |
-|-----------------|------|
-| `argus-backend` | backend 프로파일 전용 |
-| `argus-frontend` | frontend 프로파일 전용 |
-| `argus-dba` | dba 프로파일 전용 |
+3. 각 봇의 토큰을 안전한 곳에 보관
 
-### 1-2. Bot 토큰 확보
-
-각 Application에서:
-1. 좌측 메뉴 **Bot** 클릭
-2. **Reset Token** → 토큰 복사 (각각 안전한 곳에 보관)
-
-> 토큰은 Base64 문자열 형태 (Developer Portal에서만 확인 가능)
-
-### 1-3. Bot 초대 권한 설정
-
-각 Application에서:
-1. 좌측 메뉴 **OAuth2** → **URL Generator**
-2. Scopes: `bot`
-3. Bot Permissions:
-   - `Send Messages`
-   - `Read Message History`
-   - `Add Reactions`
-   - `Create Public Threads` (선택)
-   - `Send Messages in Threads` (선택)
-4. 생성된 URL을 브라우저에서 열어 **Argus 서버**에 각각 초대
-
-### 1-4. 봇 채널 분리 (권장)
-
-Discord 서버에 채널 구성:
-
-```
-#argus
-├── #argus-backend      ← argus-backend 봇이 활동
-├── #argus-frontend     ← argus-frontend 봇이 활동
-├── #argus-dba          ← argus-dba 봇이 활동
-└── #argus-general      ← 전체 공지 / PM이 관찰
-```
+> root `SETUP.md`에서는 전체 흐름만 정리합니다.
+> 개별 BotFather 입력/그룹 설정은 `backend/SETUP.md`, `frontend/SETUP.md`, `dba/SETUP.md`에서 각각 진행합니다.
 
 ---
 
@@ -99,50 +68,35 @@ dba chat        # dba 프로파일로 대화 시작
 
 ---
 
-## 3. 프로파일별 Discord Bot Token 주입
+## 3. 프로파일별 Telegram Bot Token 주입
 
-각 프로파일의 `.env`에 자신의 bot token을 설정합니다.
+각 프로파일의 `.env`에 자신의 Telegram bot token을 설정합니다.
 
 ```bash
-# 각 프로파일의 .env에 DISCORD_BOT_TOKEN 추가
-# 방법 1: 직접 파일 편집
-echo 'DISCORD_BOT_TOKEN=<argus-backend-bot-token>' >> ~/.hermes/profiles/backend/.env
-echo 'DISCORD_BOT_TOKEN=<argus-frontend-bot-token>' >> ~/.hermes/profiles/frontend/.env
-echo 'DISCORD_BOT_TOKEN=<argus-dba-bot-token>' >> ~/.hermes/profiles/dba/.env
-
-# 방법 2: hermes config 명령 (지원되는 경우)
-hermes -p backend config set discord.bot_token <argus-backend-bot-token>
-hermes -p frontend config set discord.bot_token <argus-frontend-bot-token>
-hermes -p dba config set discord.bot_token <argus-dba-bot-token>
+echo 'TELEGRAM_BOT_TOKEN=<backend-bot-token>' >> ~/.hermes/profiles/backend/.env
+echo 'TELEGRAM_BOT_TOKEN=<frontend-bot-token>' >> ~/.hermes/profiles/frontend/.env
+echo 'TELEGRAM_BOT_TOKEN=<dba-bot-token>' >> ~/.hermes/profiles/dba/.env
 ```
 
 > **주의**: 각 프로파일의 `.env`에는 **자기 token만** 있어야 합니다.
-> `--clone`으로 복사된 기존 `DISCORD_BOT_TOKEN`은 반드시 새 토큰으로 교체하세요.
+> `--clone`으로 복사된 기존 `TELEGRAM_BOT_TOKEN`은 반드시 새 토큰으로 교체하세요.
 
 ---
 
-## 4. 프로파일별 Discord 채널 설정
+## 4. 프로파일별 Telegram 기본 설정 확인
 
-각 프로파일의 `config.yaml`에서 Discord 채널을 지정합니다.
+개별 profile `SETUP.md`에서 다음 값을 설정한 뒤, root 단계에서는 전체 팀 기준으로 다시 확인합니다.
+
+- `TELEGRAM_ALLOWED_USERS`
+- `TELEGRAM_HOME_CHANNEL` (선택)
 
 ```bash
-# 방법 1: 직접 편집
-hermes -p backend config edit
-# 방법 2: config set
-hermes -p backend config set discord.allowed_channels "<channel-id>"
+grep -E 'TELEGRAM_ALLOWED_USERS|TELEGRAM_HOME_CHANNEL' ~/.hermes/profiles/backend/.env
+grep -E 'TELEGRAM_ALLOWED_USERS|TELEGRAM_HOME_CHANNEL' ~/.hermes/profiles/frontend/.env
+grep -E 'TELEGRAM_ALLOWED_USERS|TELEGRAM_HOME_CHANNEL' ~/.hermes/profiles/dba/.env
 ```
 
-설정 예시 (config.yaml):
-
-```yaml
-discord:
-  require_mention: false          # 전용 채널이면 mention 불필요
-  allowed_channels: "1234567890"  # #argus-backend 채널 ID
-  auto_thread: true
-  reactions: true
-```
-
-> 채널 ID 확인 방법: Discord 설정 → 고급 → "개발자 모드" 켜기 → 채널 우클릭 → "ID 복사"
+> 그룹 홈 채널을 쓸 경우 `TELEGRAM_HOME_CHANNEL`에는 그룹 chat ID를 넣습니다.
 
 ---
 
@@ -162,7 +116,7 @@ discord:
 - 기술 스택 지시
 - Linear 티켓 처리 규칙 (`@mention` 인식, `area:*` 라벨, `dep:blocked` 스킵)
 - `.agent/` 공유 파일 읽기/쓰기 규칙
-- PR 생성 및 Discord 보고 지시
+- PR 생성 및 Telegram 그룹 보고 지시
 
 ---
 
@@ -310,20 +264,20 @@ dba gateway        # → @argus_dba_bot 담당
 
 ---
 
-## 12. Discord Gateway 기동
+## 12. Gateway 기동
 
 모든 설정이 완료되면 각 프로파일의 gateway를 기동합니다:
 
 ```bash
 # 각각 별도 터미널에서 실행
-backend gateway    # → argus-backend 봇이 #argus-backend 채널에서 대기
-frontend gateway   # → argus-frontend 봇이 #argus-frontend 채널에서 대기
-dba gateway        # → argus-dba 봇이 #argus-dba 채널에서 대기
+backend gateway    # → @argus_backend_bot 담당
+frontend gateway   # → @argus_frontend_bot 담당
+dba gateway        # → @argus_dba_bot 담당
 ```
 
 정상 기동 확인:
-- Discord 서버의 각 채널에 봇이 온라인 상태로 표시되는지 확인
-- 채널에 메시지를 보내 봇이 응답하는지 테스트
+- 각 gateway 프로세스가 정상 실행 중인지 확인
+- Telegram 그룹에서 각 봇을 멘션했을 때 응답하는지 테스트
 
 ---
 
@@ -331,19 +285,18 @@ dba gateway        # → argus-dba 봇이 #argus-dba 채널에서 대기
 
 | # | 항목 | 확인 방법 |
 |---|------|----------|
-| 1 | Discord Bot 3개 생성 | Developer Portal에 3개의 Application 존재 |
-| 2 | Bot 3개 서버 초대 | 서버 멤버 목록에 3개 봇 표시 |
-| 3 | Profile 3개 생성 | `hermes profile list`에 backend, frontend, dba 표시 |
-| 4 | Bot Token 분리 주입 | 각 `.env`에 다른 `DISCORD_BOT_TOKEN` |
-| 5 | Discord 채널 매핑 | 각 프로파일이 다른 채널에서 응답 |
-| 6 | SOUL.md 작성 완료 | `backend chat`으로 역할 인지 확인 |
-| 7 | 모델 설정 완료 | `hermes -p backend profile show` 확인 |
-| 8 | (선택) workflow skill 확인 | `hermes -p backend skills list`에 github-pr-workflow / linear 표시 |
-| 9 | Linear 라벨 생성 | Linear 프로젝트에 area:*, dep:* 라벨 존재 |
-| 10 | `.agent/` 디렉토리 | `context.md`, `conventions.md` 파일 존재 |
-| 11 | Telegram 그룹챗 연결 (선택) | `@argus_backend_bot`, `@argus_frontend_bot`, `@argus_dba_bot` 멘션 시 각 프로파일이 응답 |
-| 12 | Gateway 기동 | 3개 봇이 각자 채널에서 온라인 |
-| 13 | Cron 동작 | 티켓 생성 후 자동으로 에이전트가 인식 |
+| 1 | Telegram Bot 3개 생성 | BotFather에서 3개 봇 생성 완료 |
+| 2 | Profile 3개 생성 | `hermes profile list`에 backend, frontend, dba 표시 |
+| 3 | Bot Token 분리 주입 | 각 `.env`에 다른 `TELEGRAM_BOT_TOKEN` |
+| 4 | Telegram 기본 설정 확인 | 각 프로파일에 `TELEGRAM_ALLOWED_USERS`가 설정됨 |
+| 5 | SOUL.md 작성 완료 | `backend chat`으로 역할 인지 확인 |
+| 6 | 모델 설정 완료 | `hermes -p backend profile show` 확인 |
+| 7 | (선택) workflow skill 확인 | `hermes -p backend skills list`에 github-pr-workflow / linear 표시 |
+| 8 | Linear 라벨 생성 | Linear 프로젝트에 area:*, dep:* 라벨 존재 |
+| 9 | `.agent/` 디렉토리 | `context.md`, `conventions.md` 파일 존재 |
+| 10 | Telegram 그룹챗 연결 (선택) | `@argus_backend_bot`, `@argus_frontend_bot`, `@argus_dba_bot` 멘션 시 각 프로파일이 응답 |
+| 11 | Gateway 기동 | 3개 gateway 프로세스가 정상 실행 |
+| 12 | Cron 동작 | 티켓 생성 후 자동으로 에이전트가 인식 |
 
 ---
 

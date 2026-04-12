@@ -9,7 +9,7 @@
 
 | 역할 | Profile명 | 책임 영역 | 코딩 도구 |
 |------|-----------|-----------|-----------|
-| PM (강사/학생) | - | 티켓 등록, 리뷰, 승인 | Linear + Discord |
+| PM (강사/학생) | - | 티켓 등록, 리뷰, 승인 | Linear + Telegram |
 | Backend Engineer | `backend` | REST API, 데이터 수집 로직, 서비스 구동 | Codex |
 | Frontend Engineer | `frontend` | 대시보드 UI, 차트, 브라우저 테스트 | Codex |
 | Database Engineer | `dba` | argus.db 스키마, 데이터 검증, 수집 정확도 | Codex |
@@ -17,7 +17,7 @@
 ### PM (사람)
 
 - Linear에 티켓 생성하고 라벨 부여
-- Discord에서 각 에이전트의 작업 현황 관찰
+- Telegram 그룹채팅에서 각 에이전트의 작업 현황 관찰
 - PR 리뷰 → merge → 다음 티켓 의존성 해제
 - `.agent/context.md`, `.agent/conventions.md` 작성
 
@@ -229,7 +229,7 @@ Frontend ──읽기──→ api-spec.md, deployment.md
 
 1. Linear에 티켓 생성 (제목 + 설명 + `area:*` 라벨)
 2. 선행 의존이 있으면 `dep:blocked` 라벨 부여
-3. Discord에서 에이전트 작업 현황 관찰
+3. Telegram 그룹채팅에서 에이전트 작업 현황 관찰
 4. PR 생성 알림 수신 → 코드 리뷰
 5. 승인 → merge
 6. 종속 티켓의 `dep:blocked` → `dep:ready` 전환
@@ -244,7 +244,7 @@ Frontend ──읽기──→ api-spec.md, deployment.md
 6. `.agent/` 공유 파일 업데이트 (api-spec, schema-changelog 등)
 7. 커밋 + PR 생성 (PR에 티켓 번호 참조)
 8. Linear에 코멘트로 PR 링크 남기기
-9. Discord에 작업 완료 보고
+9. Telegram 그룹채팅에 작업 완료 보고
 
 ---
 

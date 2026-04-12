@@ -22,7 +22,7 @@
 - API가 준비되지 않은 기능은 mockup으로 먼저 구현 가능
 - 차트는 Recharts 사용
 - 디자인 시스템은 `DESIGN.md`를 참고 (Sentry 스타일 다크 모드)
-- 작업 완료 후 Discord 채널에 진행 상황 보고
+- 작업 완료 후 Telegram 그룹채팅에 진행 상황 보고
 
 ## 읽어야 할 `.agent/` 파일
 
