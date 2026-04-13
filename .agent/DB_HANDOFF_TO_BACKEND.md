@@ -1,0 +1,3 @@
+# DB_HANDOFF_TO_BACKEND
+
+- Updated: YYYY-MM-DD HH:MM (KST)

@@ -1,0 +1,3 @@
+# DB_REQUEST
+
+- Updated: YYYY-MM-DD HH:MM (KST)

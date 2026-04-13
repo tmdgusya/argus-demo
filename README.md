@@ -282,6 +282,20 @@ Web UI (served via built-in HTTP server)
 
 See [DATA-INVENTORY.md](./DATA-INVENTORY.md) for the complete breakdown of every Hermes data source, table schemas, column types, and monitoring priority.
 
+## Student Policy Docs (Demo)
+
+For lecture/demo operation guides and copy-paste policy prompts:
+
+- [policies/00-INDEX.md](./policies/00-INDEX.md)
+- [policies/01-LECTURE-ORCHESTRATOR.md](./policies/01-LECTURE-ORCHESTRATOR.md)
+- [policies/02-BACKEND-AGENT-POLICY.md](./policies/02-BACKEND-AGENT-POLICY.md)
+- [policies/03-DBA-AGENT-POLICY.md](./policies/03-DBA-AGENT-POLICY.md)
+- [policies/04-FRONTEND-AGENT-POLICY.md](./policies/04-FRONTEND-AGENT-POLICY.md)
+- [policies/05-HANDOFF-TEMPLATES.md](./policies/05-HANDOFF-TEMPLATES.md)
+- [policies/06-LINEAR-TICKET-BACKLOG.md](./policies/06-LINEAR-TICKET-BACKLOG.md)
+- [policies/07-PM-OPERATIONS.md](./policies/07-PM-OPERATIONS.md)
+- [.agent/README.md](./.agent/README.md)
+
 ## Development Status
 
 Early planning. Data inventory complete, architecture being designed.
