@@ -482,3 +482,66 @@ T7 + T9 -> T10 -> T11
 - 티켓 완료 코멘트에는 반드시 .agent/* 문서 링크 첨부
 - 완료 기준(AC) 미충족 상태에서는 Done으로 이동 금지
 ```
+
+---
+
+## PM -> 에이전트 작업 지시문 (복붙용)
+
+아래 블록은 PM이 각 에이전트에게 티켓을 할당할 때 그대로 사용합니다.
+
+### Backend 할당
+
+```text
+당신은 Backend 담당입니다.
+이번 작업 티켓: [TICKET_KEY] [TICKET_TITLE]
+참고 문서: .agent/API_SPEC.md, .agent/DB_REQUEST.md, .agent/DB_HANDOFF_TO_BACKEND.md
+
+요청:
+1) 티켓의 완료기준(AC)을 먼저 다시 적고 시작하세요.
+2) 구현/문서 작업 후 .agent 문서를 갱신하세요.
+3) 완료 시 아래 형식으로 보고하세요.
+
+완료 보고 형식:
+- 완료 티켓:
+- 변경 파일:
+- 검증 방법:
+- 남은 리스크:
+```
+
+### DBA 할당
+
+```text
+당신은 DBA 담당입니다.
+이번 작업 티켓: [TICKET_KEY] [TICKET_TITLE]
+참고 문서: .agent/DB_REQUEST.md, .agent/DB_SPEC.md
+
+요청:
+1) Docker 기반 실행 명령을 먼저 확인하세요.
+2) 스키마/마이그레이션/시드 정책을 문서화하세요.
+3) 완료 시 백엔드가 즉시 쓸 수 있는 핸드오프를 남기세요.
+
+완료 보고 형식:
+- 완료 티켓:
+- 실행 명령:
+- 접속 정보 문서:
+- 검증 결과:
+```
+
+### Frontend 할당
+
+```text
+당신은 Frontend 담당입니다.
+이번 작업 티켓: [TICKET_KEY] [TICKET_TITLE]
+참고 문서: DESIGN.md, .agent/API_SPEC.md, .agent/FRONTEND_INTEGRATION.md
+
+요청:
+1) DESIGN.md 기준으로 화면/컴포넌트 반영 여부를 먼저 체크하세요.
+2) API 연동 시 로딩/에러/빈 상태를 반드시 포함하세요.
+3) 완료 시 데모 가능한 화면 경로를 보고하세요.
+
+완료 보고 형식:
+- 완료 티켓:
+- 구현 화면:
+- 연동 API:
+- 미완료 항목:
+```
